@@ -6,3 +6,8 @@
 *.npy binary
 *.png binary
 *.jpg binary
+*.SLDPRT binary
+*.SLDASM binary
+*.SLDDRW binary
+*.STL binary
+*.stl binary

@@ -8,6 +8,7 @@
 | [`collection/`](collection/) | 采集电脑（Windows） | 夹爪宽度标定、T_I_G 标定、演示采集、同步、构建 episode、导出 Zarr、UR5 轨迹重播 |
 | [`training/`](training/) | PRO6000 / RTX 5090（Linux） | v2 训练配置 `train_xac_v2.yaml`、训练与离线评估 |
 | [`deployment/`](deployment/) | RTX 3060 + UR5（Linux） | 策略推理与执行（软地板、夹爪开关模式）、UR5 TCP 标定、夹爪/相机驱动 |
+| [`hardware/`](hardware/) | SolidWorks | 采集夹爪和执行夹爪的三维模型（model_v1、model_v2）、UR5 连接法兰 |
 
 ## 数据流
 
