@@ -1,0 +1,101 @@
+name: xac
+
+camera_obs_latency: 0
+robot_obs_latency: 0
+gripper_obs_latency: 0
+dataset_frequeny: 10
+obs_down_sample_steps: 1 # 3, 1
+
+low_dim_obs_horizon: 2
+img_obs_horizon: 2
+action_horizon: 16
+ignore_proprioception: False
+
+shape_meta: &shape_meta
+  # acceptable types: rgb, low_dim
+  obs:
+    camera0_rgb:
+      shape: [3, 224, 224]
+      horizon: ${task.img_obs_horizon} # int
+      latency_steps: 0 # float
+      down_sample_steps: ${task.obs_down_sample_steps} # int
+      type: rgb
+      ignore_by_policy: False
+    robot0_eef_pos:
+      shape: [3]
+      horizon: ${task.low_dim_obs_horizon} # int
+      latency_steps: 0
+      down_sample_steps: ${task.obs_down_sample_steps} # float
+      type: low_dim
+      ignore_by_policy: ${task.ignore_proprioception}
+    # robot0_eef_pos_abs:
+    #   shape: [1]
+    #   axis: [2] # 2 means z-axis
+    #   horizon: ${task.low_dim_obs_horizon} # int
+    #   latency_steps: 0
+    #   down_sample_steps: ${task.obs_down_sample_steps} # float
+    #   type: low_dim
+    # robot0_eef_rot_axis_angle_abs:
+    #   shape: [2]
+    #   axis: [0, 1] # yaw and pitch
+    #   horizon: ${task.low_dim_obs_horizon} # int
+    #   latency_steps: 0
+    #   down_sample_steps: ${task.obs_down_sample_steps} # float
+    #   type: low_dim
+    robot0_eef_rot_axis_angle:
+      raw_shape: [3]
+      shape: [6]
+      horizon: ${task.low_dim_obs_horizon} # int
+      latency_steps: 0
+      down_sample_steps: ${task.obs_down_sample_steps} # float
+      type: low_dim
+      rotation_rep: rotation_6d
+      ignore_by_policy: ${task.ignore_proprioception}
+    robot0_gripper_width:
+      shape: [1]
+      horizon: ${task.low_dim_obs_horizon} # int
+      latency_steps: 0
+      down_sample_steps: ${task.obs_down_sample_steps} # float
+      type: low_dim
+      ignore_by_policy: ${task.ignore_proprioception}
+
+    # pose with respect to episode start
+    # robot0_eef_pos_wrt_start:
+    #   shape: [3]
+    #   horizon: ${task.low_dim_obs_horizon} # int
+    #   latency_steps: 0
+    #   down_sample_steps: ${task.obs_down_sample_steps} # float
+    #   type: low_dim
+    #   ignore_by_policy: ${task.ignore_proprioception}
+  action: 
+    shape: [10]
+    horizon: ${task.action_horizon}
+    latency_steps: 0 # float
+    down_sample_steps: ${task.obs_down_sample_steps} # int
+    rotation_rep: rotation_6d
+
+task_name: &task_name xac
+dataset_path: dataset_v2/replay.zarr.zip
+pose_repr: &pose_repr
+  obs_pose_repr: relative # abs or rel
+  action_pose_repr: relative # abs or rel or delta
+
+env_runner:
+  _target_: diffusion_policy.env_runner.real_pusht_image_runner.RealPushTImageRunner
+
+dataset:
+  _target_: diffusion_policy.dataset.xac_dataset.XacDataset
+  shape_meta: *shape_meta
+  dataset_path: ${task.dataset_path}
+  cache_dir: null
+  pose_repr: *pose_repr
+  action_padding: False
+  temporally_independent_normalization: False
+  repeat_frame_prob: 0.0
+  max_duration: null
+  seed: 42
+  val_ratio: 0.1
+  normalizer_num_workers: 0
+  frequency_hz: ${task.dataset_frequeny}
+  timing_tolerance: 0.25
+  gripper_calibration: calibration/gripper_width.json

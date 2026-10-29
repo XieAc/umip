@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "convention": "T_W_G = T_W_I @ T_I_G",
+  "translation_unit": "meter",
+  "method": "level_mount_correction_20261024",
+  "source": "calibration/T_I_G.npy (imported_experimental_candidate)",
+  "note": "Rotation corrected by 10.00 deg so that G+X (fingers) is parallel to iPhone +z: the user mounts the iPhone level when the gripper is vertical, and demo starts show the iPhone 2.6 deg from level while the old T_I_G put the fingers 10 deg from iPhone z. Translation unchanged; yaw about the fingers not independently verified."
+}

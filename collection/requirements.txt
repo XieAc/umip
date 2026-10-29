@@ -1,0 +1,15 @@
+numpy
+scipy
+opencv-python
+pyrealsense2
+dynamixel-sdk
+pynput
+pyserial
+av
+zarr>=2.16,<3
+numcodecs>=0.11,<0.16
+transforms3d
+math3d
+hydra-core
+omegaconf
+ur-rtde

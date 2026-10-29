@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Data, models and logs (too large for git; keep them elsewhere)
+/*/data/
+/*/dataset/
+/*/dataset_v*/
+*.zarr.zip
+*.zarr/
+/*/data_model/
+*.ckpt
+*.pth
+/*/logs/
+/*/captures/
+replay_trace_*.json
+outputs/
+wandb/
+
+# Collection: raw TIG calibration sessions
+collection/calibration/tig/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

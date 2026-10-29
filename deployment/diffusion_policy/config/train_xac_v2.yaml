@@ -1,0 +1,118 @@
+# XAC training recipe: fine-tuned, augmented ResNet18 + diffusion U-Net,
+# cosine LR, model selected by sampled action error on held-out sessions.
+defaults:
+  - _self_
+  - task: xac
+
+name: train_xac_v2
+_target_: diffusion_policy.workspace.train_xac_workspace.TrainXacWorkspace
+
+task_name: ${task.name}
+shape_meta: ${task.shape_meta}
+exp_name: "default"
+
+# executed steps of each predicted chunk (also used for action-error scoring)
+n_action_steps: 8
+
+policy:
+  _target_: diffusion_policy.policy.diffusion_unet_timm_policy.DiffusionUnetTimmPolicy
+  shape_meta: ${shape_meta}
+
+  noise_scheduler:
+    _target_: diffusers.DDIMScheduler
+    num_train_timesteps: 50
+    beta_start: 0.0001
+    beta_end: 0.02
+    beta_schedule: squaredcos_cap_v2
+    clip_sample: True
+    set_alpha_to_one: True
+    steps_offset: 0
+    prediction_type: epsilon
+
+  obs_encoder:
+    _target_: diffusion_policy.model.vision.timm_obs_encoder.TimmObsEncoder
+    shape_meta: ${shape_meta}
+    model_name: 'resnet18'
+    pretrained: True
+    frozen: False            # True freezes only the ResNet; pooling always trains
+    frozen_bn: True          # keep ImageNet BN statistics; EMA-safe
+    global_pool: ''
+    feature_aggregation: 'spatial_embedding'
+    position_encording: 'sinusoidal'
+    downsample_ratio: 32
+    use_group_norm: True     # only applies when pretrained=False
+    share_rgb_model: False
+    eval_center_crop: True
+    transforms:              # training-time only
+      - type: RandomCrop
+        ratio: 0.95
+      - _target_: torchvision.transforms.RandomRotation
+        degrees: [-5.0, 5.0]
+      - _target_: torchvision.transforms.ColorJitter
+        brightness: 0.3
+        contrast: 0.4
+        saturation: 0.5
+        hue: 0.08
+
+  num_inference_steps: 16
+  obs_as_global_cond: True
+  diffusion_step_embed_dim: 128
+  down_dims: [128, 256, 512]
+  kernel_size: 5
+  n_groups: 8
+  cond_predict_scale: True
+  input_pertub: 0.1
+  train_diffusion_n_samples: 1
+
+ema:
+  _target_: diffusion_policy.model.diffusion.ema_model.EMAModel
+  update_after_step: 0
+  inv_gamma: 1.0
+  power: 0.75
+  min_value: 0.0
+  max_value: 0.9999
+
+dataloader:
+  batch_size: 32
+  num_workers: 8
+  shuffle: True
+  pin_memory: True
+  persistent_workers: True
+
+val_dataloader:
+  batch_size: 64
+  num_workers: 8
+  shuffle: False
+  pin_memory: True
+  persistent_workers: True
+
+optimizer:
+  _target_: torch.optim.AdamW
+  lr: 3.0e-4
+  betas: [0.95, 0.999]
+  eps: 1.0e-8
+  weight_decay: 1.0e-6
+
+training:
+  device: "cuda:0"
+  seed: 42
+  cpu_threads: 4
+  bf16_amp: True
+  debug: False
+  resume: False
+  obs_encoder_lr: 5.0e-5   # ResNet backbone LR (ignored when frozen)
+  lr_scheduler: cosine
+  lr_warmup_steps: 500
+  num_epochs: 400
+  action_eval_every: 10    # sampled action error on validation -> best.ckpt
+  save_every: 100
+  max_train_steps: null
+
+hydra:
+  job:
+    override_dirname: ${name}
+  run:
+    dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}
+  sweep:
+    dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}
+    subdir: ${hydra.job.num}

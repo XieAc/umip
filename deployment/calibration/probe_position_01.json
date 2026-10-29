@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "source_samples": "/home/eirl3090/Desktop/umi_core/calibration/tcp_samples_01.json",
+  "translation_m": [
+    0.0010134965289220984,
+    0.024829085878977253,
+    0.2513081578764777
+  ],
+  "fit": {
+    "condition_number": 29.11180893135444,
+    "fixed_point_base_m": [
+      0.3583993633654968,
+      -0.5238033770668151,
+      -0.20728975105377012
+    ],
+    "rms_mm": 1.3122437722652678,
+    "max_mm": 1.7100432836847699,
+    "per_sample_mm": [
+      1.5307964442840358,
+      1.4368487286986196,
+      1.5656699585470628,
+      1.1377712309984536,
+      1.683734443668593,
+      0.8064284314318085,
+      1.176640001070174,
+      0.5042892195590588,
+      1.7100432836847699,
+      1.0088575366893824
+    ]
+  },
+  "fit_within_tolerance": true,
+  "tolerance_mm": 2.0,
+  "rotation_status": "not_calibrated_by_fixed_point",
+  "independent_validation_required": true
+}

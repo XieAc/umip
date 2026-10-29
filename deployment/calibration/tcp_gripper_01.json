@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "tcp_name": "G_TCP",
+  "robot_ip": "192.168.1.101",
+  "source_samples": "/home/eirl3090/Desktop/umi_core/calibration/tcp_samples_01.json",
+  "probe_calibration": "/home/eirl3090/Desktop/umi_core/calibration/probe_position_01.json",
+  "sample_count": 10,
+  "excluded_sample_indices_1_based": [],
+  "probe_offset_in_G_m": [0.08, 0.0, 0.0],
+  "axis_relationship": {"G+X": "F-Z", "G-Y": "F+Y", "G-Z": "F+X"},
+  "rotation_source": "User observations recorded in conversation on 2026-09-29",
+  "rotation_status": "user_supplied_requires_direction_verification",
+  "probe_translation_in_F_m": [0.0010134965289220984, 0.024829085878977253, 0.2513081578764777],
+  "translation_m": [0.0010134965289220984, 0.024829085878977253, 0.3313081578764777],
+  "tcp_offset_m_rad": [0.0010134965289220984, 0.024829085878977253, 0.3313081578764777, 2.221441469079183, 0.0, -2.221441469079183],
+  "T_F_G": [
+    [0.0, 0.0, -1.0, 0.0010134965289220984],
+    [0.0, -1.0, 0.0, 0.024829085878977253],
+    [-1.0, 0.0, 0.0, 0.3313081578764777],
+    [0.0, 0.0, 0.0, 1.0]
+  ],
+  "fit_rms_mm": 1.3122437722652678,
+  "fit_max_mm": 1.7100432836847699,
+  "fit_condition_number": 29.11180893135444,
+  "independent_validation_required": true,
+  "orientation_verified": false,
+  "installation_persistence": "Stored on computer; no saved controller installation entry is required when software applies T_F_G. Runtime set_tcp alone does not create a saved installation entry."
+}
